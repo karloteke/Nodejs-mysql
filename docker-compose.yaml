@@ -1,0 +1,39 @@
+# Define los servicios que se ejecutarán como contenedores Docker
+services:
+  # Servicio para la aplicación Node.js
+  app:
+    # Utiliza la imagen node:18-alpine
+    image: node:18-alpine
+    # Comando para instalar dependencias y ejecutar la aplicación
+    command: sh -c "yarn install && yarn run dev"
+    # Mapea el puerto 8080 del contenedor al puerto 8081 de la máquina local
+    ports:
+      - 8081:8080
+    # Directorio de trabajo dentro del contenedor
+    working_dir: /app
+    # Monta el directorio actual como un volumen en el contenedor
+    volumes:
+      - ./:/app
+    # Variables de entorno para la base de datos MySQL
+    environment:
+      MYSQL_HOST: mysql
+      MYSQL_USER: root
+      MYSQL_PASSWORD: 123456
+      MYSQL_DB: testdb
+
+  # Servicio para MySQL
+  mysql:
+    # Utiliza la imagen mysql:8.0
+    image: mysql:8.0
+    # Utiliza un volumen para persistir los datos de MySQL
+    volumes:
+      - mysql-data:/var/lib/mysql
+    # Configuración de variables de entorno para MySQL
+    environment:
+      MYSQL_ROOT_PASSWORD: 123456
+      MYSQL_DATABASE: testdb
+
+# Define los volúmenes de Docker
+volumes:
+  # Volumen para almacenar los datos de MySQL
+  mysql-data:
